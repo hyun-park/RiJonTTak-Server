@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Rocket-Hyun/RiJonTTak-Server/issues"
   },
-  "homepage": "https://github.com/Rocket-Hyun/RiJonTTak-Server#readme"
+  "homepage": "https://github.com/Rocket-Hyun/RiJonTTak-Server#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
 }
