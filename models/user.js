@@ -1,5 +1,4 @@
-module.exports = function() {
-    var users = [{
+var users = [{
         uuid: "1nj123jsb8",
         email: "rijon@tak.com",
         oauth_key: "zdk93jsdd",
@@ -19,6 +18,27 @@ module.exports = function() {
         updated_at: 1518873120
     }];
 
-    return users;
-}();
+var getUsers =  function(){
+        return users;
+    }
+var getUserByUuid = function(uuid){
+        for(var i=0; i<users.length; i++){
+            if(users[i].uuid === uuid) {
+                return users[i]
+            } else {
+            //pass
+            }
+        }
+        return {}
+
+    }
+
+
+module.exports.getUsers = function() {
+    return getUsers();
+};
+
+module.exports.getUserByUuid = function(uuid) {
+    return getUserByUuid(uuid)
+};
 
