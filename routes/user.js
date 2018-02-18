@@ -4,11 +4,6 @@ module.exports = function(app){
 
     var UserController = require('../controllers/userController');
 
-    //router.get('/', function(req, res){
-    //    var js = {hi:"gi"}
-    //    res.json(js);
-    //});
-
     router.get('/', UserController.getUserList);
 
     router.get('/:uuid', UserController.getUser);

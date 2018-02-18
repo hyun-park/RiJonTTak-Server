@@ -39,6 +39,6 @@ module.exports.getUsers = function() {
 };
 
 module.exports.getUserByUuid = function(uuid) {
-    return getUserByUuid(uuid)
+    return getUserByUuid(uuid);
 };
 
