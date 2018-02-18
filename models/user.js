@@ -45,9 +45,9 @@ var addUser = function(user) {
 
 var updateUser = function(uuid, data) {
     var user = getUserByUuid(uuid);
-    user.buy_floor = data.buy_floor;
-    user.goal_floor = data.goal_floor;
-    user.current_floor = data.current_floor;
+    user.buy_floor = Number(data.buy_floor);
+    user.goal_floor = Number(data.goal_floor);
+    user.current_floor = Number(data.current_floor);
     user.updated_at = getCurrentTimestamp();
 };
 
