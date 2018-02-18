@@ -9,6 +9,8 @@ var userRouter = require('./routes/user')(app);
 // TODO url 정규표현식 처리
 app.use('/api/users?', userRouter);
 
+var currencyRouter = require('./routes/currency')(app);
+app.use('/api/currency', currencyRouter);
 
 var server = app.listen(port, function(){
     console.log('Example app listening on port ' + port);

@@ -1,7 +1,6 @@
 var User = require('../models/user');
 
 
-
 module.exports.getUserList = function(req, res){
     res.json(User.getUsers());
 }
