@@ -20,7 +20,7 @@ var users = [{
 
 var getUsers =  function(){
         return users;
-    }
+    };
 var getUserByUuid = function(uuid){
         for(var i=0; i<users.length; i++){
             if(users[i].uuid === uuid) {
@@ -31,8 +31,33 @@ var getUserByUuid = function(uuid){
         }
         return {}
 
-    }
+    };
+var addUser = function(user) {
+    var newUser = {
+        uuid: getRandomString(10),
+        email: user.email,
+        oauth_key: user.oauth_key,
+        created_at: getCurrentTimestamp(),
+        updated_at: getCurrentTimestamp()
+    };
+    users.push(newUser);
+};
 
+var updateUser = function(uuid, data) {
+    var user = getUserByUuid(uuid);
+    user.buy_floor = data.buy_floor;
+    user.goal_floor = data.goal_floor;
+    user.current_floor = data.current_floor;
+    user.updated_at = getCurrentTimestamp();
+};
+
+var getCurrentTimestamp = function() {
+    return Math.floor(Date.now()/1000);
+};
+
+var getRandomString = function(length) {
+    return Math.random().toString(36).substr(2, length);
+};
 
 module.exports.getUsers = function() {
     return getUsers();
@@ -42,3 +67,10 @@ module.exports.getUserByUuid = function(uuid) {
     return getUserByUuid(uuid);
 };
 
+module.exports.addNewUser = function(user) {
+    addUser(user);
+};
+
+module.exports.updateUser = function(uuid, data) {
+    updateUser(uuid, data);
+};
