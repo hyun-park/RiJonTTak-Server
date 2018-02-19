@@ -4,12 +4,13 @@ firebase.initializeApp({
     serviceAccount: "../credentials/RiJonTtak-308ee4a7684d.json",
     databaseURL: "https://rijonttak.firebaseio.com"
 });
-var userRef = firebase.database().ref("users");
+
+var usersRef = firebase.database().ref("users");
 
 var ff = require('../lib/frequentFunctions')();
 
 var getUsers =  function(cb){
-    userRef.once("value").then(function(snapshot){
+    usersRef.once("value").then(function(snapshot){
         cb(snapshot.val());
     }, function(err){
         console.log("error occurred: " + err.code);
@@ -17,9 +18,8 @@ var getUsers =  function(cb){
 };
 
 var getUserByUuid = function(uuid, cb){
-    userRef.once("value").then(function(snapshot){
-        var users = snapshot.val();
-        var user = users[uuid];
+    usersRef.child(uuid).once("value").then(function(snapshot){
+        var user = snapshot.val();
         cb(user);
     }, function(err){
         throw new Error("error occurred: " + err.code);
@@ -58,16 +58,23 @@ var authenticateUser = function(_user, cb) {
 };
 
 
-var addUser = function(user) {
+var addUser = function(user, cb) {
     var newUser = {
-        uuid: ff.getRandomString(10),
         email: user.email,
         oauth_key: user.oauth_key,
         started_at: ff.getCurrentDate(),
         created_at: ff.getCurrentDate(),
         updated_at: ff.getCurrentDate()
     };
-    userRef.push(newUser);
+    var newUserRef = usersRef.push();
+    newUserRef.set(newUser)
+        .then(function() {
+            cb();
+            console.log('Synchronization succeeded');
+        })
+        .catch(function(error) {
+            console.log('Synchronization failed');
+        });
 };
 
 var updateUser = function(uuid, data) {
@@ -84,6 +91,10 @@ module.exports.getUsers = function(cb) {
 
 module.exports.getUserByUuid = function(uuid, cb) {
     return getUserByUuid(uuid, cb);
+};
+
+module.exports.addUser = function(user, cb){
+    return addUser(user, cb);
 };
 
 module.exports.signInOrUpUser = function(user, cb) {

@@ -13,6 +13,14 @@ module.exports.getUser =  function(req, res){
     }
     User.getUserByUuid(req.params.uuid, responseCb);
 }
+module.exports.addUser = function (req, res) {
+    var responseCb = function(){
+        res.status(201).end();
+    }
+    User.addUser(req.body, responseCb);
+}
+
+
 module.exports.signInOrUpUser = function(req, res) {
     var responseCb = function(verify_info) {
         if (typeof verify_info === 'undefined') {
