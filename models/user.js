@@ -26,39 +26,35 @@ var getUserByUuid = function(uuid, cb){
     });
 };
 
-var getUserByEmail = function(_email){
+var authenticateUser = function(_user, cb) {
     userRef.once("value").then(function(snapshot){
         var users = snapshot.val();
         // TODO Firebase Query 찾아 보기
         for(var i=0; i<users.length; i++){
             if(users[i].email === _email) {
                 var user = users[i];
+                return
             } else {
-                //pass
+                throw new Error("Cannot find user with email: " + _email);
             }
         }
-        cb(user);
-    }, function(err){
-        throw new Error("error occurred: " + err.code);
-    });
-}
-var authenticateUser = function(_user) {
-    try {
-        var user = getUserByEmail(_user.email);
+
         if (user.oauth_key === _user.oauth_key) {
-            return {
+            var resultData =  {
                 result: true,
                 uuid: user.uuid,
                 email: user.email
             };
         } else {
-            return {
+            var resultData = {
                 result: false
             };
         }
-    } catch(err) {
-        throw new Error(err.message);
-    }
+        cb(resultData);
+
+    }, function(err){
+        throw new Error("error occurred: " + err.code);
+    });
 };
 
 
@@ -71,7 +67,7 @@ var addUser = function(user) {
         created_at: ff.getCurrentDate(),
         updated_at: ff.getCurrentDate()
     };
-    users.push(newUser);
+    userRef.push(newUser);
 };
 
 var updateUser = function(uuid, data) {
@@ -90,9 +86,9 @@ module.exports.getUserByUuid = function(uuid, cb) {
     return getUserByUuid(uuid, cb);
 };
 
-module.exports.signInOrUpUser = function(user) {
+module.exports.signInOrUpUser = function(user, cb) {
     try {
-        return authenticateUser(user);
+        return authenticateUser(user, cb);
     } catch(err) {
         // throw new Error(err.message);
         return addUser(user);
