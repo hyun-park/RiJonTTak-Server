@@ -2,10 +2,16 @@ var User = require('../models/user');
 
 
 module.exports.getUserList = function(req, res){
-    res.status(200).json(User.getUsers());
+    var responseCb = function(users) {
+        res.status(200).json(users);
+    }
+    User.getUsers(responseCb);
 }
 module.exports.getUser =  function(req, res){
-    res.status(200).json(User.getUserByUuid(req.params.uuid));
+    var responseCb = function(user) {
+        res.status(200).json(user);
+    }
+    User.getUserByUuid(req.params.uuid, responseCb);
 }
 module.exports.signInOrUpUser = function(req, res) {
     var verify_info = User.signInOrUpUser(req.body);
