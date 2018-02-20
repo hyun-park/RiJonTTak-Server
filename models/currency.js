@@ -7,14 +7,12 @@ var rippleCurrencyToFloor = function(currency) {
 }
 
 var getCurrency = function(httpResponse) {
-
     request(API_URL, function(err, apiResponse, apibody){
         var rawCurrency = JSON.parse(apibody);
         var refinedCurrency = {
             time: ff.timestampToDate(rawCurrency.timestamp),
             floor: rippleCurrencyToFloor(rawCurrency.last)
         }
-
         httpResponse.json(refinedCurrency);
     });
 };

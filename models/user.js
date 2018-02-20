@@ -8,7 +8,6 @@ firebase.initializeApp({
 
 var usersRef = firebase.database().ref("users");
 
-
 var getUsers =  function(successCb, errorCb){
     usersRef.once("value").then(function(snapshot){
         successCb(snapshot.val());
@@ -65,6 +64,7 @@ var addUser = function(user, successCb, errorCb) {
     var newUser = {
         email: user.email,
         oauth_key: user.oauth_key,
+        fcm_key: user.fcm_key,
         started_at: ff.getCurrentDate(),
         created_at: ff.getCurrentDate(),
         updated_at: ff.getCurrentDate()
@@ -98,6 +98,15 @@ var updateUser = function(uuid, data, successCb, errorCb) {
     getUserByUuid(uuid, userUpdateCb);
 };
 
+var updateUsersFloor = function(currentFloor, updatedFloor) {
+    usersRef.orderByChild("current_floor").equalTo(Number(currentFloor)).once("value")
+        .then(function(snapshot){d
+            usersRef.orderByChild("current_floor").equalTo(Number(currentFloor)).update({
+                ""
+            })
+        })
+}
+
 module.exports.getUsers = function(successCb, errorCb) {
     return getUsers(successCb, errorCb);
 };
@@ -112,4 +121,8 @@ module.exports.signInOrUpUser = function(user, successCb, errorCb) {
 
 module.exports.updateUser = function(uuid, data, successCb, errorCb) {
     updateUser(uuid, data, successCb, errorCb);
+};
+
+module.exports.updateUsersFloor = function() {
+
 };
