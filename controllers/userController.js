@@ -1,23 +1,48 @@
 var User = require('../models/user');
 
+var okWithBodyResponseCb = function(res) {
+    return function(obj){
+        res.status(200).json(obj);
+    }
+}
 
-module.exports.getUserList = function(req, res){
-    var responseCb = function(users) {
-        res.status(200).json(users);
+var okResponseCb = function(res) {
+    return function(){
+        res.status(200).end();
     }
-    User.getUsers(responseCb);
 }
-module.exports.getUser =  function(req, res){
-    var responseCb = function(user) {
-        res.status(200).json(user);
-    }
-    User.getUserByUuid(req.params.uuid, responseCb);
-}
-module.exports.addUser = function (req, res) {
-    var responseCb = function(){
+
+var createdResponseCb = function(res) {
+    return function(){
         res.status(201).end();
     }
-    User.addUser(req.body, responseCb);
+}
+
+var nocontentResponseCb = function(res) {
+    return function(){
+        res.status(204).end();
+    }
+}
+
+var badWithBodyResponseCb = function(res) {
+    return function(obj){
+        res.status(400).json(obj);
+    }
+}
+
+var iseWithBodyResponseCb = function(res){
+    return function(obj){
+        res.status(500).json(obj);
+    }
+}
+
+
+
+module.exports.getUserList = function(req, res){
+    User.getUsers(okWithBodyResponseCb(res), badWithBodyResponseCb(res));
+}
+module.exports.getUser =  function(req, res){
+    User.getUserByUuid(req.params.uuid, okWithBodyResponseCb(res), badWithBodyResponseCb(res));
 }
 
 module.exports.signInOrUpUser = function(req, res) {
@@ -32,14 +57,13 @@ module.exports.signInOrUpUser = function(req, res) {
                 });
             } else {
                 res.status(401).json({
-                    message: verify_info.email + " exists, but value of key is wrong."
+                    message: verify_info.email + " exists, but oauth key value is wrong."
                 });
             }
         }
     }
-    User.signInOrUpUser(req.body, responseCb);
+    User.signInOrUpUser(req.body, responseCb, iseWithBodyResponseCb(res));
 }
 module.exports.updateUser = function(req, res){
-    User.updateUser(req.params.uuid, req.body);
-    res.status(204).end();
+    User.updateUser(req.params.uuid, req.body, nocontentResponseCb(res), iseWithBodyResponseCb(res));
 }

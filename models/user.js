@@ -1,5 +1,6 @@
-var users = [];
 var firebase = require("firebase");
+var ff = require('../lib/frequentFunctions')();
+
 firebase.initializeApp({
     serviceAccount: "../credentials/RiJonTtak-308ee4a7684d.json",
     databaseURL: "https://rijonttak.firebaseio.com"
@@ -7,82 +8,60 @@ firebase.initializeApp({
 
 var usersRef = firebase.database().ref("users");
 
-var ff = require('../lib/frequentFunctions')();
 
-var getUsers =  function(cb){
+var getUsers =  function(successCb, errorCb){
     usersRef.once("value").then(function(snapshot){
-        cb(snapshot.val());
+        successCb(snapshot.val());
     }, function(err){
+        errorCb({ "message": "error occurred: " + err.code });
         console.log("error occurred: " + err.code);
     });
 };
 
-var getUserByUuid = function(uuid, cb){
+var getUserByUuid = function(uuid, successCb, errorCb){
     usersRef.child(uuid).once("value").then(function(snapshot){
         var user = snapshot.val();
-        cb(user);
+        if(user !== null) {
+            successCb(user);
+        } else {
+            errorCb({ "message": "Cannot find user with uuid " + uuid});
+            console.log("Cannot find user with uuid " + uuid);
+        }
     }, function(err){
+        errorCb({ "message": "error occurred: " + err.code});
         throw new Error("error occurred: " + err.code);
     });
 };
 
-var signInOrUpUser = function(_user, cb){
+var signInOrUpUser = function(_user, successCb, errorCb){
     usersRef.orderByChild("email").equalTo(_user.email).once("value").then(function(snapshot){
-        var user = snapshot.val()
-        if(user !== null) {
-          if(user.oauth_key === _user.oauth_key) {
-              var resultData =  {
-                  result: true,
-                  uuid: user.uuid,
-                  email: user.email
-              };
-          } else {
-              var resultData =  {
-                  result: false
-              };
-          }
-          cb(resultData);
+        var userObj = snapshot.val();
+        if(userObj !== null) {
+            var uuid = Object.keys(userObj)[0];
+            var user = userObj[uuid];
+            if(user.oauth_key === _user.oauth_key) {
+                var resultData =  {
+                    result: true,
+                    uuid: uuid,
+                    email: user.email
+                };
+            } else {
+                var resultData =  {
+                    result: false,
+                    email: _user.email
+                };
+            }
+            successCb(resultData);
+
         } else {
-          addUser(_user, cb);
+          addUser(_user, successCb, errorCb);
         }
     }, function(err){
         throw new Error("error occurred: " + err.code);
     });
 }
 
-// var authenticateUser = function(_user, cb) {
-//     userRef.once("value").then(function(snapshot){
-//         var users = snapshot.val();
-//         // TODO Firebase Query 찾아 보기
-//         for(var i=0; i<users.length; i++){
-//             if(users[i].email === _email) {
-//                 var user = users[i];
-//                 return
-//             } else {
-//                 throw new Error("Cannot find user with email: " + _email);
-//             }
-//         }
-//
-//         if (user.oauth_key === _user.oauth_key) {
-//             var resultData =  {
-//                 result: true,
-//                 uuid: user.uuid,
-//                 email: user.email
-//             };
-//         } else {
-//             var resultData = {
-//                 result: false
-//             };
-//         }
-//         cb(resultData);
-//
-//     }, function(err){
-//         throw new Error("error occurred: " + err.code);
-//     });
-// };
-
-
-var addUser = function(user, cb) {
+var addUser = function(user, successCb, errorCb) {
     var newUser = {
         email: user.email,
         oauth_key: user.oauth_key,
@@ -93,38 +72,44 @@ var addUser = function(user, cb) {
     var newUserRef = usersRef.push();
     newUserRef.set(newUser)
         .then(function() {
-            cb();
-            console.log('Synchronization succeeded');
+            successCb();
         })
-        .catch(function(error) {
-            console.log('Synchronization failed');
+        .catch(function(err) {
+            errorCb({ "message": "error occurred: " + err.code});
+            throw new Error("error occurred: " + err.code);
         });
 };
 
-var updateUser = function(uuid, data) {
-    var user = getUserByUuid(uuid);
-    user.buy_floor = Number(data.buy_floor);
-    user.goal_floor = Number(data.goal_floor);
-    user.current_floor = Number(data.current_floor);
-    user.updated_at = ff.getCurrentDate();
+var updateUser = function(uuid, data, successCb, errorCb) {
+    var userUpdateCb = function(user){
+        user.buy_floor = Number(data.buy_floor);
+        user.goal_floor = Number(data.goal_floor);
+        user.current_floor = Number(data.current_floor);
+        user.updated_at = ff.getCurrentDate();
+        usersRef.child(uuid).set(user)
+            .then(function () {
+                successCb();
+            })
+            .catch(function(err) {
+                errorCb({ "message": "error occurred: " + err.code});
+                throw new Error("error occurred: " + err.code);
+            });
+    }
+    getUserByUuid(uuid, userUpdateCb);
 };
 
-module.exports.getUsers = function(cb) {
-    return getUsers(cb);
+module.exports.getUsers = function(successCb, errorCb) {
+    return getUsers(successCb, errorCb);
 };
 
-module.exports.getUserByUuid = function(uuid, cb) {
-    return getUserByUuid(uuid, cb);
+module.exports.getUserByUuid = function(uuid, successCb, errorCb) {
+    return getUserByUuid(uuid, successCb, errorCb);
 };
 
-module.exports.addUser = function(user, cb){
-    return addUser(user, cb);
+module.exports.signInOrUpUser = function(user, successCb, errorCb) {
+    return signInOrUpUser(user, successCb, errorCb);
 };
 
-module.exports.signInOrUpUser = function(user, cb) {
-    return signInOrUpUser(user, cb);
-};
-
-module.exports.updateUser = function(uuid, data) {
-    updateUser(uuid, data);
+module.exports.updateUser = function(uuid, data, successCb, errorCb) {
+    updateUser(uuid, data, successCb, errorCb);
 };

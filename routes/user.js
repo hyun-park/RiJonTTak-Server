@@ -8,8 +8,7 @@ module.exports = function(app){
 
     router.get('/:uuid', UserController.getUser);
 
-    // router.post('/', UserController.signInOrUpUser);
-    router.post('/', UserController.addUser);
+    router.post('/', UserController.signInOrUpUser);
 
     router.put('/:uuid', UserController.updateUser);
 
