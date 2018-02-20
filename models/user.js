@@ -26,36 +26,60 @@ var getUserByUuid = function(uuid, cb){
     });
 };
 
-var authenticateUser = function(_user, cb) {
-    userRef.once("value").then(function(snapshot){
-        var users = snapshot.val();
-        // TODO Firebase Query 찾아 보기
-        for(var i=0; i<users.length; i++){
-            if(users[i].email === _email) {
-                var user = users[i];
-                return
-            } else {
-                throw new Error("Cannot find user with email: " + _email);
-            }
-        }
-
-        if (user.oauth_key === _user.oauth_key) {
-            var resultData =  {
-                result: true,
-                uuid: user.uuid,
-                email: user.email
-            };
+var signInOrUpUser = function(_user, cb){
+    usersRef.orderByChild("email").equalTo(_user.email).once("value").then(function(snapshot){
+        var user = snapshot.val()
+        if(user !== null) {
+          if(user.oauth_key === _user.oauth_key) {
+              var resultData =  {
+                  result: true,
+                  uuid: user.uuid,
+                  email: user.email
+              };
+          } else {
+              var resultData =  {
+                  result: false
+              };
+          }
+          cb(resultData);
         } else {
-            var resultData = {
-                result: false
-            };
+          addUser(_user, cb);
         }
-        cb(resultData);
-
     }, function(err){
         throw new Error("error occurred: " + err.code);
     });
-};
+}
+
+// var authenticateUser = function(_user, cb) {
+//     userRef.once("value").then(function(snapshot){
+//         var users = snapshot.val();
+//         // TODO Firebase Query 찾아 보기
+//         for(var i=0; i<users.length; i++){
+//             if(users[i].email === _email) {
+//                 var user = users[i];
+//                 return
+//             } else {
+//                 throw new Error("Cannot find user with email: " + _email);
+//             }
+//         }
+//
+//         if (user.oauth_key === _user.oauth_key) {
+//             var resultData =  {
+//                 result: true,
+//                 uuid: user.uuid,
+//                 email: user.email
+//             };
+//         } else {
+//             var resultData = {
+//                 result: false
+//             };
+//         }
+//         cb(resultData);
+//
+//     }, function(err){
+//         throw new Error("error occurred: " + err.code);
+//     });
+// };
 
 
 var addUser = function(user, cb) {
@@ -98,12 +122,7 @@ module.exports.addUser = function(user, cb){
 };
 
 module.exports.signInOrUpUser = function(user, cb) {
-    try {
-        return authenticateUser(user, cb);
-    } catch(err) {
-        // throw new Error(err.message);
-        return addUser(user);
-    }
+    return signInOrUpUser(user, cb);
 };
 
 module.exports.updateUser = function(uuid, data) {

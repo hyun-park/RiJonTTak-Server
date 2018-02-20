@@ -20,7 +20,6 @@ module.exports.addUser = function (req, res) {
     User.addUser(req.body, responseCb);
 }
 
-
 module.exports.signInOrUpUser = function(req, res) {
     var responseCb = function(verify_info) {
         if (typeof verify_info === 'undefined') {
