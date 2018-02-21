@@ -77,6 +77,7 @@ var addUser = function(user, successCb, errorCb) {
 
 var updateUser = function(uuid, data, successCb, errorCb) {
     var userUpdateCb = function(user){
+        try {
         user.buy_floor = Number(data.buy_floor);
         user.goal_floor = Number(data.goal_floor);
         user.current_floor = Number(data.current_floor);
@@ -89,6 +90,9 @@ var updateUser = function(uuid, data, successCb, errorCb) {
                 errorCb({ "message": "error occurred: " + err.code});
                 throw new Error("error occurred: " + err.code);
             });
+        } catch(err) {
+            errorCb({ "message": "error occurred: " + err.code});
+        }
     }
     getUserByUuid(uuid, userUpdateCb);
 };

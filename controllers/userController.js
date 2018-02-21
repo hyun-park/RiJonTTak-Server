@@ -68,12 +68,3 @@ module.exports.signInOrUpUser = function(req, res) {
 module.exports.updateUser = function(req, res){
     User.updateUser(req.params.uuid, req.body, nocontentResponseCb(res), iseWithBodyResponseCb(res));
 }
-
-module.exports.updateUsersFloor = function(req, res){
-    res.status(202).end();
-}
-
-module.exports.getUsersPopulation = function(req, res){
-    User.getUsersPopulation();
-    res.status(200).end();
-}

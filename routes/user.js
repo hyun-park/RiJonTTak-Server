@@ -8,10 +8,6 @@ module.exports = function(app){
 
     router.post('/', UserController.signInOrUpUser);
 
-    router.get('/update', UserController.updateUsersFloor);
-
-    router.get('/pop', UserController.getUsersPopulation);
-
     router.get('/:uuid', UserController.getUser);
 
     router.put('/:uuid', UserController.updateUser);
