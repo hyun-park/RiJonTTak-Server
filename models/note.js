@@ -1,17 +1,17 @@
 var firebase = require("firebase");
 var ff = require('../lib/frequentFunctions')();
 
-var chatsRef = firebase.database().ref("chats");
+var notesRef = firebase.database().ref("notes");
 
-var addChats = function(msg, user_uuid, buy_floor, successCb, errorCb) {
-    var newChat = {
+var addNotes = function(msg, user_uuid, buy_floor, successCb, errorCb) {
+    var newNote = {
         message: msg,
         user_uuid: user_uuid,
         buy_floor: buy_floor,
         created_at: ff.getCurrentDate()
     }
-    var newChatRef = chatsRef.push();
-    newChatRef.set(newChat)
+    var newNoteRef = notesRef.push();
+    newNoteRef.set(newNote)
         .then(function(){
             successCb();
         })
@@ -21,6 +21,6 @@ var addChats = function(msg, user_uuid, buy_floor, successCb, errorCb) {
         });
 }
 
-module.exports.addChats = function(msg, user_uuid, buy_floor, successCb, errorCb) {
-    return addChats(msg, user_uuid, buy_floor, successCb, errorCb);
+module.exports.addNotes = function(msg, user_uuid, buy_floor, successCb, errorCb) {
+    return addNotes(msg, user_uuid, buy_floor, successCb, errorCb);
 };

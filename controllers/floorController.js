@@ -1,4 +1,4 @@
-var Chat = require('../models/chat');
+var Floor = require('../models/floor');
 
 
 var okWithBodyResponseCb = function(res) {
@@ -38,6 +38,10 @@ var iseWithBodyResponseCb = function(res){
 }
 
 
-module.exports.addChats = function (req, res) {
-    Chat.addChats(req.body.msg, req.body.user_uuid, req.body.buy_floor, createdResponseCb(res), iseWithBodyResponseCb(res));
+module.exports.getFloors = function (req, res) {
+    Floor.getFloors(okWithBodyResponseCb(res), iseWithBodyResponseCb(res));
+}
+
+module.exports.getFloorByLevel = function(req, res) {
+    Floor.getFloorByLevel(req.params.level, okWithBodyResponseCb(res), iseWithBodyResponseCb(res));
 }

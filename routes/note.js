@@ -2,11 +2,11 @@ module.exports = function(app){
     var express = require('express');
     var router = express.Router();
 
-    var ChatController = require('../controllers/chatController');
+    var NoteController = require('../controllers/noteController');
 
     // router.get('/', UserController.getUserList);
 
-    router.post('/', ChatController.addChats);
+    router.post('/', NoteController.addNotes);
 
     return router;
 }

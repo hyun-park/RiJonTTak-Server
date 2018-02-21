@@ -18,8 +18,11 @@ app.use('/api/users', userRouter);
 var currencyRouter = require('./routes/currency')(app);
 app.use('/api/currency', currencyRouter);
 
-var chatRouter = require('./routes/chat')(app);
-app.use('/api/chats', chatRouter);
+var noteRouter = require('./routes/note')(app);
+app.use('/api/notes', noteRouter);
+
+var floorRouter = require('./routes/floor')(app);
+app.use('/api/floors', floorRouter);
 
 var server = app.listen(port, function(){
     console.log('Example app listening on port ' + port);
