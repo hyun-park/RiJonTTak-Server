@@ -1,4 +1,5 @@
 var User = require('../models/user');
+var Floor = require('../models/floor');
 
 var okWithBodyResponseCb = function(res) {
     return function(obj){
@@ -69,6 +70,10 @@ module.exports.updateUser = function(req, res){
 }
 
 module.exports.updateUsersFloor = function(req, res){
-    User.updateUsersFloor(9, 10);
     res.status(202).end();
+}
+
+module.exports.getUsersPopulation = function(req, res){
+    User.getUsersPopulation();
+    res.status(200).end();
 }

@@ -9,6 +9,9 @@ firebase.initializeApp({
     databaseURL: "https://rijonttak.firebaseio.com"
 });
 
+var cron = require("./lib/updateCurrency")();
+cron.start();
+
 var port = process.env.PORT || 8080;
 
 var userRouter = require('./routes/user')(app);

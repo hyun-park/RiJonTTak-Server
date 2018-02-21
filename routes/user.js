@@ -10,9 +10,12 @@ module.exports = function(app){
 
     router.get('/update', UserController.updateUsersFloor);
 
+    router.get('/pop', UserController.getUsersPopulation);
+
     router.get('/:uuid', UserController.getUser);
 
     router.put('/:uuid', UserController.updateUser);
+
 
 
     return router;

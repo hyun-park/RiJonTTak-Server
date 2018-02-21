@@ -107,6 +107,21 @@ var updateUsersFloor = function(currentFloor, updatedFloor) {
         })
 }
 
+var getUsersPopulation = function(cb){
+    var usersPopulation = new Array(60+1).join('0').split('').map(parseFloat);
+    usersRef.orderByChild("current_floor")
+        .on("child_added", function(data) {
+            // TODO 효율적으로 호출하기...
+            if(data.val().current_floor !== undefined) {
+                usersPopulation[Number(data.val().current_floor)-1] += 1
+            } else {
+                //do nothing
+            }
+            usersRef.off('child_added');
+            cb(usersPopulation);
+        });
+}
+
 module.exports.getUsers = function(successCb, errorCb) {
     return getUsers(successCb, errorCb);
 };
@@ -126,3 +141,7 @@ module.exports.updateUser = function(uuid, data, successCb, errorCb) {
 module.exports.updateUsersFloor = function(currentFloor, updatedFloor) {
     return updateUsersFloor(currentFloor, updatedFloor);
 };
+
+module.exports.getUsersPopulation = function(cb) {
+    return getUsersPopulation(cb);
+}
