@@ -1,5 +1,5 @@
 var Note = require('../models/note');
-
+var Floor = require('../models/floor');
 
 var okWithBodyResponseCb = function(res) {
     return function(obj){
@@ -39,5 +39,6 @@ var iseWithBodyResponseCb = function(res){
 
 
 module.exports.addNotes = function (req, res) {
-    Note.addNotes(req.body.msg, req.body.user_uuid, req.body.buy_floor, createdResponseCb(res), iseWithBodyResponseCb(res));
+    Floor.updateFloorNote(req.body.msg, req.body.user);
+    Note.addNotes(req.body.msg, req.body.user.uuid, req.body.user.buy_floor, createdResponseCb(res), iseWithBodyResponseCb(res));
 }
