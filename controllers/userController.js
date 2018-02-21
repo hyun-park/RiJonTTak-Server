@@ -67,3 +67,8 @@ module.exports.signInOrUpUser = function(req, res) {
 module.exports.updateUser = function(req, res){
     User.updateUser(req.params.uuid, req.body, nocontentResponseCb(res), iseWithBodyResponseCb(res));
 }
+
+module.exports.updateUsersFloor = function(req, res){
+    User.updateUsersFloor(9, 10);
+    res.status(202).end();
+}

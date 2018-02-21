@@ -100,10 +100,15 @@ var updateUser = function(uuid, data, successCb, errorCb) {
 
 var updateUsersFloor = function(currentFloor, updatedFloor) {
     usersRef.orderByChild("current_floor").equalTo(Number(currentFloor)).once("value")
-        .then(function(snapshot){d
-            usersRef.orderByChild("current_floor").equalTo(Number(currentFloor)).update({
-                ""
-            })
+        .then(function(snapshot){
+            var users = snapshot.val();
+            var usersKey = Object.keys(users);
+
+            for (var i=0; i<usersKey.length;i++) {
+                users[usersKey[i]]["current_floor"] = Number(updatedFloor);
+            }
+
+            usersRef.update(users);
         })
 }
 
@@ -120,9 +125,9 @@ module.exports.signInOrUpUser = function(user, successCb, errorCb) {
 };
 
 module.exports.updateUser = function(uuid, data, successCb, errorCb) {
-    updateUser(uuid, data, successCb, errorCb);
+    return updateUser(uuid, data, successCb, errorCb);
 };
 
-module.exports.updateUsersFloor = function() {
-
+module.exports.updateUsersFloor = function(currentFloor, updatedFloor) {
+    return updateUsersFloor(currentFloor, updatedFloor);
 };

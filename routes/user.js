@@ -6,11 +6,14 @@ module.exports = function(app){
 
     router.get('/', UserController.getUserList);
 
-    router.get('/:uuid', UserController.getUser);
-
     router.post('/', UserController.signInOrUpUser);
 
+    router.get('/update', UserController.updateUsersFloor);
+
+    router.get('/:uuid', UserController.getUser);
+
     router.put('/:uuid', UserController.updateUser);
+
 
     return router;
 }
