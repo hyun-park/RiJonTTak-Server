@@ -17,7 +17,7 @@ var port = process.env.PORT || 8080;
 
 var userRouter = require('./routes/user')(app, cache);
 // TODO url 정규표현식 처리하기
-app.use('/api/users', userRouter);
+app.use('/api/users?', userRouter);
 
 var currencyRouter = require('./routes/currency')(app, cache);
 app.use('/api/currency', currencyRouter);
@@ -27,6 +27,10 @@ app.use('/api/notes', noteRouter);
 
 var floorRouter = require('./routes/floor')(app, cache);
 app.use('/api/floors', floorRouter);
+
+app.use(function(req, res){
+    res.status(404).end();
+});
 
 var server = app.listen(port, function(){
     console.log('Example app listening on port ' + port);
