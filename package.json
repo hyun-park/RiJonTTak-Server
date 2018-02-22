@@ -26,8 +26,8 @@
     "express": "^4.16.2",
     "fcm-node": "^1.2.1",
     "firebase": "^4.10.0",
+    "memory-cache": "^0.2.0",
     "request": "^2.83.0",
-    "request-promise": "^4.2.2",
     "strftime": "^0.10.0"
   }
 }
