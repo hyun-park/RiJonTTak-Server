@@ -6,5 +6,7 @@ module.exports = function(app){
 
     router.get('/', CurrencyController.getCurrency);
 
+    router.post('/', CurrencyController.manipulateCurrency);
+
     return router;
 }
