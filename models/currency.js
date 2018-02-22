@@ -2,7 +2,7 @@ const API_URL = "https://api.korbit.co.kr/v1/ticker/detailed?currency_pair=xrp_k
 var request = require('request');
 var ff = require('../lib/frequentFunctions')();
 var firebase = require("firebase");
-var currencyRef = firebase.database().ref("last_currency");
+var currencyRef = firebase.database().ref("lastCurrency");
 
 var rippleCurrencyToFloor = function(currency) {
     return Math.floor(Number(currency)/100);

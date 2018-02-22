@@ -3,12 +3,12 @@ var ff = require('../lib/frequentFunctions')();
 
 var notesRef = firebase.database().ref("notes");
 
-var addNotes = function(msg, user_uuid, buy_floor, successCb, errorCb) {
+var addNotes = function(msg, userUuid, buyFloor, successCb, errorCb) {
     var newNote = {
         message: msg,
-        user_uuid: user_uuid,
-        buy_floor: buy_floor,
-        created_at: ff.getCurrentDate()
+        userUuid: userUuid,
+        buyFloor: buyFloor,
+        createdAt: ff.getCurrentDate()
     }
     var newNoteRef = notesRef.push();
     newNoteRef.set(newNote)
@@ -21,6 +21,6 @@ var addNotes = function(msg, user_uuid, buy_floor, successCb, errorCb) {
         });
 }
 
-module.exports.addNotes = function(msg, user_uuid, buy_floor, successCb, errorCb) {
-    return addNotes(msg, user_uuid, buy_floor, successCb, errorCb);
+module.exports.addNotes = function(msg, userUuid, buyFloor, successCb, errorCb) {
+    return addNotes(msg, userUuid, buyFloor, successCb, errorCb);
 };

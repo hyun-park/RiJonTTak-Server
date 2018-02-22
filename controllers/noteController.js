@@ -40,5 +40,5 @@ var iseWithBodyResponseCb = function(res){
 
 module.exports.addNotes = function (req, res) {
     Floor.updateFloorNote(req.body.msg, req.body.user);
-    Note.addNotes(req.body.msg, req.body.user.uuid, req.body.user.buy_floor, createdResponseCb(res), iseWithBodyResponseCb(res));
+    Note.addNotes(req.body.msg, req.body.user.uuid, req.body.user.buyFloor, createdResponseCb(res), iseWithBodyResponseCb(res));
 }

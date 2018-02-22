@@ -33,7 +33,7 @@ var signInOrUpUser = function(_user, successCb, errorCb){
         if(userObj !== null) {
             var uuid = Object.keys(userObj)[0];
             var user = userObj[uuid];
-            if(user.oauth_key === _user.oauth_key) {
+            if(user.oauthKey === _user.oauthKey) {
                 var resultData =  {
                     result: true,
                     uuid: uuid,
@@ -58,11 +58,11 @@ var signInOrUpUser = function(_user, successCb, errorCb){
 var addUser = function(user, successCb, errorCb) {
     var newUser = {
         email: user.email,
-        oauth_key: user.oauth_key,
-        fcm_key: user.fcm_key,
-        started_at: ff.getCurrentDate(),
-        created_at: ff.getCurrentDate(),
-        updated_at: ff.getCurrentDate()
+        oauthKey: user.oauthKey,
+        fcmKey: user.fcmKey,
+        startedAt: ff.getCurrentDate(),
+        createdAt: ff.getCurrentDate(),
+        updatedAt: ff.getCurrentDate()
     };
     var newUserRef = usersRef.push();
     newUserRef.set(newUser)
@@ -78,10 +78,10 @@ var addUser = function(user, successCb, errorCb) {
 var updateUser = function(uuid, data, successCb, errorCb) {
     var userUpdateCb = function(user){
         try {
-        user.buy_floor = Number(data.buy_floor);
-        user.goal_floor = Number(data.goal_floor);
-        user.current_floor = Number(data.current_floor);
-        user.updated_at = ff.getCurrentDate();
+        user.buyFloor = Number(data.buyFloor);
+        user.goalFloor = Number(data.goalFloor);
+        user.currentFloor = Number(data.currentFloor);
+        user.updatedAt = ff.getCurrentDate();
         usersRef.child(uuid).set(user)
             .then(function () {
                 successCb();
@@ -98,13 +98,13 @@ var updateUser = function(uuid, data, successCb, errorCb) {
 };
 
 var updateUsersFloor = function(currentFloor, updatedFloor) {
-    usersRef.orderByChild("current_floor").equalTo(Number(currentFloor)).once("value")
+    usersRef.orderByChild("currentFloor").equalTo(Number(currentFloor)).once("value")
         .then(function(snapshot){
             var users = snapshot.val();
             var usersKey = Object.keys(users);
 
             for (var i=0; i<usersKey.length;i++) {
-                users[usersKey[i]]["current_floor"] = Number(updatedFloor);
+                users[usersKey[i]]["currentFloor"] = Number(updatedFloor);
             }
 
             usersRef.update(users);
@@ -113,11 +113,11 @@ var updateUsersFloor = function(currentFloor, updatedFloor) {
 
 var getUsersPopulation = function(cb){
     var usersPopulation = new Array(60+1).join('0').split('').map(parseFloat);
-    usersRef.orderByChild("current_floor")
+    usersRef.orderByChild("currentFloor")
         .on("child_added", function(data) {
             // TODO 효율적으로 호출하기...
-            if(data.val().current_floor !== undefined) {
-                usersPopulation[Number(data.val().current_floor)-1] += 1
+            if(data.val().currentFloor !== undefined) {
+                usersPopulation[Number(data.val().currentFloor)-1] += 1
             } else {
                 //do nothing
             }

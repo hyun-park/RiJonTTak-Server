@@ -49,8 +49,8 @@ var updateFloorNote = function(msg, user) {
       floorsRef.once("value")
           .then(function(snapshot){
               var floors = snapshot.val();
-              var note = {msg: msg, buy_floor: Number(user.buy_floor)};
-              var floorNotes = floors[Number(user.current_floor) - 1]["last_notes"];
+              var note = {msg: msg, buyFloor: Number(user.buyFloor)};
+              var floorNotes = floors[Number(user.currentFloor) - 1]["lastNotes"];
               if(floorNotes.length >= 5){
                   floorNotes.shift();
                   floorNotes.push(note);
@@ -59,7 +59,7 @@ var updateFloorNote = function(msg, user) {
               }
               floorsRef.set(floors)
                   .then(function(){
-                    console.log(user.current_floor + " floor chat added successfully.");
+                    console.log(user.currentFloor + " floor chat added successfully.");
                   })
                   .catch(function(err){
                       console.log("error occurred: " + err.code);
