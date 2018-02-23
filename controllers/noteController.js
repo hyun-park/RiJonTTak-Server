@@ -47,10 +47,12 @@ module.exports.addNotes = function (req, res) {
 
         var msg = {
             type: "note-added",
-            floor: user.currentFloor
+            currentFloor: user.currentFloor,
+            buyFloor: user.buyFloor,
+            note: req.body.msg
         }
 
-        fcmPush("/topics/level"+user.currentFloor, msg);
+        fcmPush("/topics/visiting_level_"+user.currentFloor, msg);
     };
     User.getUserByUuid(req.body.userUuid, addNoteCb, iseWithBodyResponseCb(res));
 }
