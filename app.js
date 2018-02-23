@@ -5,6 +5,19 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: false}));
 var firebase = require("firebase");
 var cache = require("./lib/memoryCache");
+var morgan = require('morgan');
+var fs = require('fs');
+var path = require('path');
+
+if(app.get("env") === "development") {
+    var logFilePath = "logs/development.log"
+} else {
+    var logFilePath = "logs/production.log"
+}
+var accessLogStream = fs.createWriteStream(path.join(__dirname, logFilePath), {flags: "a"});
+
+// setup the logger
+app.use(morgan('combined', {stream: accessLogStream}));
 
 firebase.initializeApp({
     serviceAccount: "../credentials/RiJonTtak-308ee4a7684d.json",

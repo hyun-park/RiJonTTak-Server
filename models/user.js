@@ -52,7 +52,7 @@ var signInOrUpUser = function(_user, successCb, errorCb){
     }, function(err){
         throw new Error("error occurred: " + err.code);
     });
-}
+};
 
 var addUser = function(user, successCb, errorCb) {
     var newUser = {
@@ -78,9 +78,6 @@ var addUser = function(user, successCb, errorCb) {
 var updateUser = function(uuid, data, successCb, errorCb) {
     var userUpdateCb = function(user){
         try {
-            console.log(user);
-            console.log(data);
-            console.log(data.fcmKey !== "");
             if(data.fcmKey !== ""){
                 user.fcmKey = data.fcmKey;
             }
@@ -90,11 +87,10 @@ var updateUser = function(uuid, data, successCb, errorCb) {
             if(data.currentFloor !== ""){
                 user.currentFloor = Number(data.currentFloor);
             }
-            console.log(user);
             user.updatedAt = ff.getCurrentDate();
             usersRef.child(uuid).set(user)
                 .then(function () {
-                    successCb();
+                    successCb(user);
                 })
                 .catch(function(err) {
                     errorCb({ "message": "error occurred: " + err.code});
@@ -103,7 +99,7 @@ var updateUser = function(uuid, data, successCb, errorCb) {
         } catch(err) {
             errorCb({ "message": "error occurred: " + err.code});
         }
-    }
+    };
     getUserByUuid(uuid, userUpdateCb, errorCb);
 };
 
@@ -120,7 +116,7 @@ var updateUsersFloor = function(currentFloor, updatedFloor) {
 
             usersRef.update(users);
         })
-}
+};
 
 var getUsersPopulation = function(cb){
     var usersPopulation = new Array(60+1).join('0').split('').map(parseFloat);
@@ -135,7 +131,7 @@ var getUsersPopulation = function(cb){
             usersRef.off('child_added');
             cb(usersPopulation);
         });
-}
+};
 
 module.exports.getUsers = function(successCb, errorCb) {
     return getUsers(successCb, errorCb);
