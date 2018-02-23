@@ -58,6 +58,7 @@ var addUser = function(user, successCb, errorCb) {
     var newUser = {
         email: user.email,
         oauthKey: user.oauthKey,
+        fcmKey: user.fcmKey,
         startedAt: ff.getCurrentDate(),
         createdAt: ff.getCurrentDate(),
         updatedAt: ff.getCurrentDate()
@@ -77,10 +78,19 @@ var addUser = function(user, successCb, errorCb) {
 var updateUser = function(uuid, data, successCb, errorCb) {
     var userUpdateCb = function(user){
         try {
-            user.fcmKey = data.fcmKey;
-            user.buyFloor = Number(data.buyFloor);
-            user.goalFloor = Number(data.goalFloor);
-            user.currentFloor = Number(data.currentFloor);
+            console.log(user);
+            console.log(data);
+            console.log(data.fcmKey !== "");
+            if(data.fcmKey !== ""){
+                user.fcmKey = data.fcmKey;
+            }
+            if(data.buyFloor !== ""){
+                user.buyFloor = Number(data.buyFloor);
+            }
+            if(data.currentFloor !== ""){
+                user.currentFloor = Number(data.currentFloor);
+            }
+            console.log(user);
             user.updatedAt = ff.getCurrentDate();
             usersRef.child(uuid).set(user)
                 .then(function () {
@@ -94,7 +104,7 @@ var updateUser = function(uuid, data, successCb, errorCb) {
             errorCb({ "message": "error occurred: " + err.code});
         }
     }
-    getUserByUuid(uuid, userUpdateCb);
+    getUserByUuid(uuid, userUpdateCb, errorCb);
 };
 
 var updateUsersFloor = function(currentFloor, updatedFloor) {
