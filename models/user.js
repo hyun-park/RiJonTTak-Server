@@ -78,18 +78,19 @@ var addUser = function(user, successCb, errorCb) {
 var updateUser = function(uuid, data, successCb, errorCb) {
     var userUpdateCb = function(user){
         try {
-        user.buyFloor = Number(data.buyFloor);
-        user.goalFloor = Number(data.goalFloor);
-        user.currentFloor = Number(data.currentFloor);
-        user.updatedAt = ff.getCurrentDate();
-        usersRef.child(uuid).set(user)
-            .then(function () {
-                successCb();
-            })
-            .catch(function(err) {
-                errorCb({ "message": "error occurred: " + err.code});
-                throw new Error("error occurred: " + err.code);
-            });
+            user.fcmKey = data.fcmKey;
+            user.buyFloor = Number(data.buyFloor);
+            user.goalFloor = Number(data.goalFloor);
+            user.currentFloor = Number(data.currentFloor);
+            user.updatedAt = ff.getCurrentDate();
+            usersRef.child(uuid).set(user)
+                .then(function () {
+                    successCb();
+                })
+                .catch(function(err) {
+                    errorCb({ "message": "error occurred: " + err.code});
+                    throw new Error("error occurred: " + err.code);
+                });
         } catch(err) {
             errorCb({ "message": "error occurred: " + err.code});
         }
@@ -100,6 +101,7 @@ var updateUser = function(uuid, data, successCb, errorCb) {
 var updateUsersFloor = function(currentFloor, updatedFloor) {
     usersRef.orderByChild("currentFloor").equalTo(Number(currentFloor)).once("value")
         .then(function(snapshot){
+            // TODO 효율적으로 호출하기...
             var users = snapshot.val();
             var usersKey = Object.keys(users);
 

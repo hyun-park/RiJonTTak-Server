@@ -26,7 +26,7 @@ var noteRouter = require('./routes/note')(app);
 app.use('/api/notes', noteRouter);
 
 var floorRouter = require('./routes/floor')(app, cache);
-app.use('/api/floors', floorRouter);
+app.use('/api/floors?', floorRouter);
 
 app.use(function(req, res){
     res.status(404).end();
