@@ -50,12 +50,17 @@ var updateFloorNote = function(msg, user) {
           .then(function(snapshot){
               var floors = snapshot.val();
               var note = {msg: msg, buyFloor: Number(user.buyFloor)};
-              var floorNotes = floors[Number(user.currentFloor) - 1]["lastNotes"];
+              if(floors[Number(user.currentFloor) - 1]["lastNotes"] === undefined){
+                  floors[Number(user.currentFloor) - 1]["lastNotes"] = [];
+                  var floorNotes = floors[Number(user.currentFloor) - 1]["lastNotes"];
+              } else {
+                  var floorNotes = floors[Number(user.currentFloor) - 1]["lastNotes"];
+              }
+              floorNotes.push(note);
               if(floorNotes.length >= 5){
                   floorNotes.shift();
-                  floorNotes.push(note);
               } else {
-                  floorNotes.push(note);
+                  // do nothing
               }
               floorsRef.set(floors)
                   .then(function(){
