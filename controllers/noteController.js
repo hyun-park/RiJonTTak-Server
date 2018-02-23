@@ -50,7 +50,7 @@ module.exports.addNotes = function (req, res) {
             floor: user.currentFloor
         }
 
-        fcmPush("level"+user.currentFloor, msg);
+        fcmPush("/topics/level"+user.currentFloor, msg);
     };
     User.getUserByUuid(req.body.userUuid, addNoteCb, iseWithBodyResponseCb(res));
 }

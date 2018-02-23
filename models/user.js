@@ -27,12 +27,13 @@ var getUserByUuid = function(uuid, successCb, errorCb){
     });
 };
 
-// var getUserByCurrentFloor = function(level) {
+// var getUsersByCurrentFloor = function(level, cb) {
 //     usersRef.orderByChild("currentFloor").equalTo(Number(level)).once("value")
 //         .then(function(snapshot){
 //             var users = snapshot.val();
 //             if(users !== null) {
-//                 var
+//                 var uuids = Object.key(users);
+//
 //             } else {
 //                 // do nothing
 //             }
