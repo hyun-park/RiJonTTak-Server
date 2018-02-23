@@ -1,6 +1,7 @@
 var Note = require('../models/note');
 var Floor = require('../models/floor');
 var User = require('../models/user');
+var fcmPush = require('../lib/fcm');
 
 var okWithBodyResponseCb = function(res) {
     return function(obj){
@@ -43,6 +44,13 @@ module.exports.addNotes = function (req, res) {
     var addNoteCb = function(user){
         Floor.updateFloorNote(req.body.msg, user);
         Note.addNotes(req.body.msg, user.uuid, user.buyFloor, user.currentFloor, createdResponseCb(res), iseWithBodyResponseCb(res));
-    }
+
+        var msg = {
+            type: "note-added",
+            floor: user.currentFloor
+        }
+
+        fcmPush("level"+user.currentFloor, msg);
+    };
     User.getUserByUuid(req.body.userUuid, addNoteCb, iseWithBodyResponseCb(res));
 }

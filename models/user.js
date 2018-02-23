@@ -27,31 +27,47 @@ var getUserByUuid = function(uuid, successCb, errorCb){
     });
 };
 
+// var getUserByCurrentFloor = function(level) {
+//     usersRef.orderByChild("currentFloor").equalTo(Number(level)).once("value")
+//         .then(function(snapshot){
+//             var users = snapshot.val();
+//             if(users !== null) {
+//                 var
+//             } else {
+//                 // do nothing
+//             }
+//
+//         }, function(err){
+//             throw new Error("error occurred: " + err.code);
+//         });
+// }
+
 var signInOrUpUser = function(_user, successCb, errorCb){
-    usersRef.orderByChild("email").equalTo(_user.email).once("value").then(function(snapshot){
-        var userObj = snapshot.val();
-        if(userObj !== null){
-            var uuid = Object.keys(userObj)[0];
-            var user = userObj[uuid];
-            user["uuid"] = uuid;
-            if(user.oauthKey === _user.oauthKey) {
-                var resultData = {
-                    result: true,
-                    user: user,
+    usersRef.orderByChild("email").equalTo(_user.email).once("value")
+        .then(function(snapshot){
+            var userObj = snapshot.val();
+            if(userObj !== null){
+                var uuid = Object.keys(userObj)[0];
+                var user = userObj[uuid];
+                user["uuid"] = uuid;
+                if(user.oauthKey === _user.oauthKey) {
+                    var resultData = {
+                        result: true,
+                        user: user,
+                    }
+                } else {
+                    var resultData = {
+                        result: false,
+                        user: _user
+                    }
                 }
+                successCb(resultData);
             } else {
-                var resultData = {
-                    result: false,
-                    user: _user
-                }
+                addUser(_user, successCb, errorCb);
             }
-            successCb(resultData);
-        } else {
-            addUser(_user, successCb, errorCb);
-        }
-    }, function(err){
-        throw new Error("error occurred: " + err.code);
-    });
+        }, function(err){
+            throw new Error("error occurred: " + err.code);
+        });
 };
 
 var addUser = function(user, successCb, errorCb) {
