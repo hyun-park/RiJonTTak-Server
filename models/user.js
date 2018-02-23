@@ -30,25 +30,24 @@ var getUserByUuid = function(uuid, successCb, errorCb){
 var signInOrUpUser = function(_user, successCb, errorCb){
     usersRef.orderByChild("email").equalTo(_user.email).once("value").then(function(snapshot){
         var userObj = snapshot.val();
-        if(userObj !== null) {
+        if(userObj !== null){
             var uuid = Object.keys(userObj)[0];
             var user = userObj[uuid];
+            user["uuid"] = uuid;
             if(user.oauthKey === _user.oauthKey) {
-                var resultData =  {
+                var resultData = {
                     result: true,
-                    uuid: uuid,
-                    email: user.email
-                };
+                    user: user,
+                }
             } else {
-                var resultData =  {
+                var resultData = {
                     result: false,
-                    email: _user.email
-                };
+                    user: _user
+                }
             }
             successCb(resultData);
-
         } else {
-          addUser(_user, successCb, errorCb);
+            addUser(_user, successCb, errorCb);
         }
     }, function(err){
         throw new Error("error occurred: " + err.code);
@@ -64,9 +63,10 @@ var addUser = function(user, successCb, errorCb) {
         updatedAt: ff.getCurrentDate()
     };
     var newUserRef = usersRef.push();
+    newUser["uuid"] = newUserRef.key;
     newUserRef.set(newUser)
         .then(function() {
-            successCb();
+            successCb(newUser);
         })
         .catch(function(err) {
             errorCb({ "message": "error occurred: " + err.code});

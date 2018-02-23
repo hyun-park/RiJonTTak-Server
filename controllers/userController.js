@@ -47,18 +47,15 @@ module.exports.getUser =  function(req, res){
 }
 
 module.exports.signInOrUpUser = function(req, res) {
-    var responseCb = function(verify_info) {
-        if (typeof verify_info === 'undefined') {
-            res.status(201).end();
+    var responseCb = function(user_info) {
+        if (typeof user_info.result === 'undefined') {
+            res.status(201).json(user_info);
         } else {
-            if (verify_info.result) {
-                res.status(200).json({
-                    email: verify_info.email,
-                    uuid: verify_info.uuid
-                });
+            if (user_info.result) {
+                res.status(200).json(user_info.user);
             } else {
                 res.status(401).json({
-                    message: verify_info.email + " exists, but oauth key value is wrong."
+                    message: user_info.user.email + " exists, but oauth key value is wrong."
                 });
             }
         }
