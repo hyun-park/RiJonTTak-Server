@@ -59,7 +59,6 @@ var addUser = function(user, successCb, errorCb) {
     var newUser = {
         email: user.email,
         oauthKey: user.oauthKey,
-        fcmKey: user.fcmKey,
         startedAt: ff.getCurrentDate(),
         createdAt: ff.getCurrentDate(),
         updatedAt: ff.getCurrentDate()
