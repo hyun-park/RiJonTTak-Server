@@ -77,5 +77,13 @@ module.exports.signInOrUpUser = function(req, res) {
 }
 module.exports.updateUser = function(req, res){
     logger.debug(req.params, req.body);
-    User.updateUser(req.params.uuid, req.body, okWithBodyResponseCb(res), iseWithBodyResponseCb(res));
+    if(Object.keys(req.body).length === 0 && req.body.constructor === Object){
+        User.resetUser(req.params.uuid, okWithBodyResponseCb(res), iseWithBodyResponseCb(res));
+    } else {
+        User.updateUser(req.params.uuid, req.body, okWithBodyResponseCb(res), iseWithBodyResponseCb(res));
+    }
 }
+// module.exports.resetUser = function(req, res){
+//     logger.debug(req.params);
+//     User.resetUser(req.)
+// }

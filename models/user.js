@@ -54,7 +54,7 @@ var signInOrUpUser = function(_user, successCb, errorCb){
                 if(user.oauthKey === _user.oauthKey) {
                     var resultData = {
                         result: true,
-                        user: user,
+                        user: user
                     }
                 } else {
                     var resultData = {
@@ -138,6 +138,25 @@ var updateUsersFloor = function(currentFloor, updatedFloor) {
         })
 };
 
+var resetUser = function(uuid, successCb, errorCb) {
+    var userResetCb = function(user) {
+        user.buyFloor = 0;
+        user.currentFloor = 0;
+        user.goalFloor = 0;
+        user.startedAt = ff.getCurrentDate();
+
+        usersRef.child(uuid).set(user)
+            .then(function(){
+                successCb(user)
+            })
+            .catch(function(err){
+                errorCb({ "message": "error occurred: " + err.code});
+                throw new Error("error occurred: " + err.code);
+            });
+    };
+    getUserByUuid(uuid, userResetCb, errorCb);
+};
+
 var getUsersPopulation = function(cb){
     var usersPopulation = new Array(60+1).join('0').split('').map(parseFloat);
     usersRef.orderByChild("currentFloor")
@@ -175,4 +194,8 @@ module.exports.updateUsersFloor = function(currentFloor, updatedFloor) {
 
 module.exports.getUsersPopulation = function(cb) {
     return getUsersPopulation(cb);
-}
+};
+
+module.exports.resetUser = function(uuid, successCb, errorCb){
+    return resetUser(uuid, successCb, errorCb);
+};
