@@ -87,6 +87,9 @@ var updateUser = function(uuid, data, successCb, errorCb) {
             if(data.currentFloor !== ""){
                 user.currentFloor = Number(data.currentFloor);
             }
+            if(data.goalFloor !== ""){
+                user.goalFloor = Number(data.goalFloor);
+            }
             user.updatedAt = ff.getCurrentDate();
             usersRef.child(uuid).set(user)
                 .then(function () {

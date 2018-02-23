@@ -1,5 +1,6 @@
 var Note = require('../models/note');
 var Floor = require('../models/floor');
+var User = require('../models/user');
 
 var okWithBodyResponseCb = function(res) {
     return function(obj){
@@ -14,8 +15,8 @@ var okResponseCb = function(res) {
 }
 
 var createdResponseCb = function(res) {
-    return function(){
-        res.status(201).end();
+    return function(obj){
+        res.status(201).json(obj);
     }
 }
 
@@ -39,6 +40,9 @@ var iseWithBodyResponseCb = function(res){
 
 
 module.exports.addNotes = function (req, res) {
-    Floor.updateFloorNote(req.body.msg, req.body.user);
-    Note.addNotes(req.body.msg, req.body.user.uuid, req.body.user.buyFloor, createdResponseCb(res), iseWithBodyResponseCb(res));
+    var addNoteCb = function(user){
+        Floor.updateFloorNote(req.body.msg, user);
+        Note.addNotes(req.body.msg, user.uuid, user.buyFloor, user.currentFloor, createdResponseCb(res), iseWithBodyResponseCb(res));
+    }
+    User.getUserByUuid(req.body.userUuid, addNoteCb, iseWithBodyResponseCb(res));
 }
