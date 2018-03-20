@@ -36,22 +36,6 @@ var getUserByUuid = function(uuid, successCb, errorCb){
     });
 };
 
-// var getUsersByCurrentFloor = function(level, cb) {
-//     usersRef.orderByChild("currentFloor").equalTo(Number(level)).once("value")
-//         .then(function(snapshot){
-//             var users = snapshot.val();
-//             if(users !== null) {
-//                 var uuids = Object.key(users);
-//
-//             } else {
-//                 // do nothing
-//             }
-//
-//         }, function(err){
-//             throw new Error("error occurred: " + err.code);
-//         });
-// }
-
 var signInOrUpUser = function(_user, successCb, errorCb){
     usersRef.orderByChild("email").equalTo(_user.email).once("value")
         .then(function(snapshot){
@@ -71,11 +55,24 @@ var signInOrUpUser = function(_user, successCb, errorCb){
                         user: _user
                     }
                 }
-                successCb(resultData);
+                if (_user.fcmKey) {
+                    user["fcmKey"] = _user.fcmKey;
+                    usersRef.child(uuid).set(user)
+                        .then(function () {
+                            successCb(resultData);
+                        })
+                        .catch(function(err) {
+                            errorCb({ "message": "error occurred: " + err.code});
+                            throw new Error("error occurred: " + err.code);
+                        });
+                } else {
+                    successCb(resultData);
+                }
             } else {
                 addUser(_user, successCb, errorCb);
             }
         }, function(err){
+            errorCb({ "message": "error occurred: " + err.code});
             throw new Error("error occurred: " + err.code);
         });
 };
@@ -146,7 +143,7 @@ var updateUsersFloor = function(currentFloor, updatedFloor, fcm) {
 
                 fcm.push(fcm.to, fcm.msg);
                 usersRef.update(users);
-                addUsersTopic(fcm.to, ["n2j3d18239d"]);
+                // addUsersTopic(fcm.to, ["n2j3d18239d"]);
             } else {
                 // do nothing
             }
@@ -157,6 +154,7 @@ var updateUsersFloor = function(currentFloor, updatedFloor, fcm) {
 };
 
 var addUsersTopic = function(topic, fcmTokens) {
+    // TODO 잘 작동하는지 체크해봐야함...
     console.log("addUsersTopic 까지 옴");
     var options = {
         uri: FCM_TOPIC_ADD_API_URL,
