@@ -2,6 +2,7 @@
 .elasticbeanstalk/
 .idea
 credentials/
+fcmTest.js
 
 # Logs
 logs

@@ -123,18 +123,26 @@ var updateUser = function(uuid, data, successCb, errorCb) {
     getUserByUuid(uuid, userUpdateCb, errorCb);
 };
 
-var updateUsersFloor = function(currentFloor, updatedFloor) {
+var updateUsersFloor = function(currentFloor, updatedFloor, fcm) {
     usersRef.orderByChild("currentFloor").equalTo(Number(currentFloor)).once("value")
         .then(function(snapshot){
-            // TODO 효율적으로 호출하기...
             var users = snapshot.val();
-            var usersKey = Object.keys(users);
+            if(users !== undefined) {
+                // TODO 효율적으로 호출하기...
+                var usersKey = Object.keys(users);
 
-            for (var i=0; i<usersKey.length;i++) {
-                users[usersKey[i]]["currentFloor"] = Number(updatedFloor);
+                for (var i=0; i<usersKey.length;i++) {
+                    users[usersKey[i]]["currentFloor"] = Number(updatedFloor);
+                }
+
+                fcm.push(fcm.to, fcm.msg);
+                usersRef.update(users);
+            } else {
+                // do nothing
             }
-
-            usersRef.update(users);
+        })
+        .catch(function(err) {
+            throw new Error("error occurred: " + err);
         })
 };
 
@@ -188,8 +196,8 @@ module.exports.updateUser = function(uuid, data, successCb, errorCb) {
     return updateUser(uuid, data, successCb, errorCb);
 };
 
-module.exports.updateUsersFloor = function(currentFloor, updatedFloor) {
-    return updateUsersFloor(currentFloor, updatedFloor);
+module.exports.updateUsersFloor = function(currentFloor, updatedFloor, fcm) {
+    return updateUsersFloor(currentFloor, updatedFloor, fcm);
 };
 
 module.exports.getUsersPopulation = function(cb) {
