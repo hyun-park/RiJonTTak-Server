@@ -1,6 +1,15 @@
 var firebase = require("firebase");
 var ff = require('../lib/frequentFunctions')();
 
+var fs = require('fs');
+var rawdata = fs.readFileSync('./credentials/RiJonTtak-fcm.json');
+var serverKey = JSON.parse(rawdata)["server-key"];
+
+const FCM_TOPIC_ADD_API_URL = "https://iid.googleapis.com/iid/v1:batchAdd"
+const FCM_TOPIC_REMOVE_API_URL = "https://iid.googleapis.com/iid/v1:batchRemove"
+
+var request = require('request');
+
 var usersRef = firebase.database().ref("users");
 
 var getUsers =  function(successCb, errorCb){
@@ -137,6 +146,7 @@ var updateUsersFloor = function(currentFloor, updatedFloor, fcm) {
 
                 fcm.push(fcm.to, fcm.msg);
                 usersRef.update(users);
+                addUsersTopic(fcm.to, ["n2j3d18239d"]);
             } else {
                 // do nothing
             }
@@ -145,6 +155,39 @@ var updateUsersFloor = function(currentFloor, updatedFloor, fcm) {
             throw new Error("error occurred: " + err);
         })
 };
+
+var addUsersTopic = function(topic, fcmTokens) {
+    console.log("addUsersTopic 까지 옴");
+    var options = {
+        uri: FCM_TOPIC_ADD_API_URL,
+        method: 'POST',
+        headers: {
+            'Authorization': 'key=' + serverKey
+        },
+        json: {
+            "to": topic,
+            "registration_tokens": fcmTokens
+        }
+    };
+
+    request(options, function (error, response, body) {
+        console.log("리쿼스트 요청 하고나서 콜백 중!");
+        if (!error && response.statusCode == 200) {
+            var info = JSON.parse(body);
+            console.log(info)
+        } else {
+            console.log("유저 토픽 업데이트 에러 발생");
+            console.log(error);
+            console.log(response);
+            var info = JSON.parse(body);
+            console.log(info)
+        }
+    });
+}
+
+var removeUsersTopic = function() {
+
+}
 
 var resetUser = function(uuid, successCb, errorCb) {
     var userResetCb = function(user) {
