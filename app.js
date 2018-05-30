@@ -27,7 +27,7 @@ firebase.initializeApp({
 var cron = require("./lib/updateCurrency")();
 cron.start();
 
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 3000;
 
 var userRouter = require('./routes/user')(app, cache);
 // TODO url 정규표현식 처리하기

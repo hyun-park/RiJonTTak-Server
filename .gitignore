@@ -3,6 +3,7 @@
 .idea
 credentials/
 fcmTest.js
+.ebextensions/
 
 # Logs
 logs
